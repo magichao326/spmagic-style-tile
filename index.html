@@ -46,9 +46,12 @@ h1{font-family:var(--hand);font-weight:400;font-size:clamp(2.6rem,6.5vw,4.4rem);
 .btn:hover{background:var(--magic);transform:translateY(-2px)}
 .btn.ghost{background:transparent;color:var(--ink);border:2px solid var(--ink);box-shadow:none;margin-left:12px}
 .btn.ghost:hover{border-color:var(--magic);color:var(--magic);background:transparent}
-.hero-photo{flex:1 1 420px;position:relative}
-.hero-photo .ph{width:100%;aspect-ratio:5/4;background:#eee url('assets/show-01.jpg') center/cover;border-radius:54% 46% 52% 48%/48% 55% 45% 52%;box-shadow:0 24px 60px rgba(20,40,60,.18)}
-.hero-photo .badge{position:absolute;bottom:6%;left:-4%;background:var(--paper);border-radius:50px;padding:12px 24px;font-family:var(--hand);font-size:1.05rem;box-shadow:0 10px 26px rgba(20,40,60,.16);transform:rotate(-4deg)}
+.hero-photo{flex:1 1 480px;position:relative;padding:30px 0 40px}
+.hero-photo .ph{width:100%;aspect-ratio:16/10;background:#eee url('assets/cast-01.jpg') center 32%/cover;border-radius:38% 62% 45% 55%/52% 44% 56% 48%;box-shadow:0 24px 60px rgba(20,40,60,.22)}
+.hero-photo .ph-sub{position:absolute;background:#eee center/cover;box-shadow:0 14px 34px rgba(20,40,60,.22);animation:floaty 8s ease-in-out infinite}
+.hero-photo .ph-sub.s1{width:38%;aspect-ratio:1/1;background-image:url('assets/show-01.jpg');border-radius:52% 48% 45% 55%/50% 55% 45% 50%;top:-6%;left:-8%;animation-delay:1.2s}
+.hero-photo .ph-sub.s2{width:32%;aspect-ratio:1/1;background-image:url('assets/show-06.jpg');border-radius:47% 53% 52% 48%/53% 47% 53% 47%;bottom:-4%;right:-5%;animation-delay:2.4s}
+.hero-photo .badge{position:absolute;bottom:-9%;left:14%;z-index:3;background:var(--paper);border-radius:50px;padding:12px 24px;font-family:var(--hand);font-size:1.05rem;box-shadow:0 10px 26px rgba(20,40,60,.16);transform:rotate(-4deg)}
 
 /* wave divider */
 .wave{display:block;width:100%;height:70px}
@@ -136,7 +139,7 @@ footer .fine{font-size:.85rem;opacity:.7;margin-top:14px}
 .hero-photo .ph{animation:floaty 7s ease-in-out infinite}
 @keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
 .cast-band{padding:0 0 90px}
-.cast-band .cast-ph{max-width:1160px;margin:0 auto;aspect-ratio:21/9;background:#dfeefa url('assets/cast-01.jpg') center 30%/cover;border-radius:40px;box-shadow:0 24px 60px rgba(20,40,60,.2);position:relative;overflow:hidden}
+.cast-band .cast-ph{max-width:1160px;margin:0 auto;aspect-ratio:21/9;background:#dfeefa url('assets/cast-03.jpg') center 40%/cover;border-radius:40px;box-shadow:0 24px 60px rgba(20,40,60,.2);position:relative;overflow:hidden}
 .cast-band .cast-cap{position:absolute;left:50%;bottom:24px;transform:translateX(-50%);background:rgba(247,251,254,.92);border-radius:40px;padding:10px 30px;font-family:var(--hand);font-size:1.15rem;white-space:nowrap}
 
 @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
@@ -163,6 +166,8 @@ footer .fine{font-size:.85rem;opacity:.7;margin-top:14px}
     </div>
     <div class="hero-photo">
       <div class="ph"></div>
+      <div class="ph-sub s1"></div>
+      <div class="ph-sub s2"></div>
       <div class="badge">在孩子眼前發生的「不可能」！</div>
     </div>
   </div>

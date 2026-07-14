@@ -310,6 +310,61 @@ if (window.gsap && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
   gsap.utils.toArray('.show-card').forEach((el, i) => {
     gsap.from(el, {rotate: i % 2 ? 3 : -3, scrollTrigger: {trigger: el, start: 'top 90%'}});
   });
+
+  // ===== 捲動魔法層 =====
+  // 1) 捲動時魔法塵：捲得越快撒越多
+  let lastY = scrollY, lastEmit = 0, dustCount = 0;
+  addEventListener('scroll', () => {
+    const now = performance.now();
+    const v = Math.abs(scrollY - lastY);
+    lastY = scrollY;
+    if (now - lastEmit < 70 || v < 6 || dustCount > 18) return;
+    lastEmit = now;
+    const n = v > 60 ? 3 : 1;
+    for (let i = 0; i < n; i++) {
+      const d = document.createElement('span');
+      d.className = 'sparkle-dust';
+      d.textContent = ['✦','✧','⋆'][i % 3];
+      d.style.left = (8 + Math.random() * 84) + 'vw';
+      d.style.top = (12 + Math.random() * 76) + 'vh';
+      d.style.fontSize = (11 + Math.random() * 12) + 'px';
+      document.body.appendChild(d); dustCount++;
+      gsap.fromTo(d, {opacity: 0, scale: .3}, {opacity: 1, scale: 1, duration: .22, ease: 'power1.out'});
+      gsap.to(d, {y: -46 - Math.random() * 40, x: (Math.random() - .5) * 60, opacity: 0, rotate: 160,
+        duration: 1.1, delay: .18, ease: 'power1.out', onComplete: () => { d.remove(); dustCount--; }});
+    }
+  }, {passive: true});
+
+  // 2) 標題進場星星爆發
+  gsap.utils.toArray('.dot-title').forEach(t => {
+    ScrollTrigger.create({trigger: t, start: 'top 85%', once: true, onEnter: () => {
+      const r = t.getBoundingClientRect();
+      for (let i = 0; i < 9; i++) {
+        const b = document.createElement('span');
+        b.className = 'sparkle-dust';
+        b.textContent = '✦';
+        b.style.left = (r.left + 10) + 'px';
+        b.style.top = (r.top + r.height / 2) + 'px';
+        b.style.fontSize = (9 + Math.random() * 13) + 'px';
+        b.style.color = ['#6d4fc4','#ff8b74','#2bb5a0','#f4b942'][i % 4];
+        document.body.appendChild(b);
+        const a = (i / 9) * Math.PI * 2;
+        gsap.to(b, {x: Math.cos(a) * (46 + Math.random() * 46), y: Math.sin(a) * (34 + Math.random() * 34),
+          opacity: 0, scale: .2, rotate: 200, duration: .95, ease: 'power2.out', onComplete: () => b.remove()});
+      }
+    }});
+  });
+
+  // 3) 星星分層視差：小星星動得慢、大星星動得快（深度感）
+  gsap.utils.toArray('.star').forEach(st => {
+    const depth = parseInt(st.style.fontSize) / 26;
+    gsap.to(st, {yPercent: -140 * depth, ease: 'none',
+      scrollTrigger: {trigger: st.parentElement, start: 'top bottom', end: 'bottom top', scrub: true}});
+  });
+
+  // 4) 大合照掀幕感：進場時從遮罩中亮出來
+  gsap.from('.cast-ph', {clipPath: 'inset(0 40% 0 40% round 40px)', scale: .96, duration: 1.2, ease: 'power3.out',
+    scrollTrigger: {trigger: '.cast-ph', start: 'top 80%'}});
 }
 </script>
 </body>

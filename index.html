@@ -121,6 +121,22 @@ footer{background:var(--ink);color:#f5efe2;padding:60px 6vw 40px;border-radius:6
 footer .logo{justify-content:center;color:#fff;margin-bottom:12px}
 footer .fine{font-size:.85rem;opacity:.7;margin-top:14px}
 .note-badge{position:fixed;bottom:16px;left:16px;z-index:99;background:#fff;border:2px solid var(--sun);color:var(--ink);font-size:.72rem;letter-spacing:.2em;padding:8px 14px;border-radius:30px;box-shadow:0 6px 18px rgba(20,40,60,.12)}
+
+/* magic layer */
+.star{position:absolute;color:#ffd76e;pointer-events:none;z-index:1;text-shadow:0 0 12px rgba(255,215,110,.9);will-change:transform,opacity}
+.shows .star{color:#fff}
+.sparkle-dust{position:fixed;pointer-events:none;z-index:95;font-size:14px;color:#8fd0f2;text-shadow:0 0 10px rgba(109,79,196,.8);will-change:transform,opacity}
+.dot-title::before{content:"✦";width:auto;height:auto;border-radius:0;background:none;box-shadow:none;color:var(--magic);font-size:1.3em;line-height:1;animation:starspin 6s ease-in-out infinite}
+@keyframes starspin{0%,100%{transform:rotate(0) scale(1)}50%{transform:rotate(180deg) scale(1.25)}}
+.show-card{position:relative}
+.show-card::after{content:"✨";position:absolute;top:10px;right:14px;font-size:1.3rem;opacity:0;transition:.3s;transform:scale(.5) rotate(-30deg)}
+.show-card:hover::after{opacity:1;transform:scale(1.15) rotate(0)}
+.hero-photo .ph{animation:floaty 7s ease-in-out infinite}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+.cast-band{padding:0 0 90px}
+.cast-band .cast-ph{max-width:1160px;margin:0 auto;aspect-ratio:21/9;background:#dfeefa url('assets/cast-01.jpg') center 30%/cover;border-radius:40px;box-shadow:0 24px 60px rgba(20,40,60,.2);position:relative;overflow:hidden}
+.cast-band .cast-cap{position:absolute;left:50%;bottom:24px;transform:translateX(-50%);background:rgba(247,251,254,.92);border-radius:40px;padding:10px 30px;font-family:var(--hand);font-size:1.15rem;white-space:nowrap}
+
 @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -196,6 +212,14 @@ footer .fine{font-size:.85rem;opacity:.7;margin-top:14px}
 
 <svg class="wave" viewBox="0 0 1440 70" preserveAspectRatio="none" style="transform:scaleY(-1)"><path d="M0,40 C240,80 480,0 720,30 C960,60 1200,10 1440,40 L1440,70 L0,70 Z" fill="#fff"/></svg>
 
+<section class="cast-band">
+  <div class="inner" style="padding:0 6vw">
+    <div class="dot-title">我們是盛保羅魔幻劇團</div>
+    <div class="sec-sub">THE COMPANY ── 把魔法帶到你面前的人</div>
+  </div>
+  <div class="cast-ph"><div class="cast-cap">每一場驚呼背後，是整團人的魔法 ✨</div></div>
+</section>
+
 <section class="gallery">
   <div class="inner">
     <div class="dot-title">劇照集錦</div>
@@ -229,7 +253,44 @@ footer .fine{font-size:.85rem;opacity:.7;margin-top:14px}
 <script>
 if (window.gsap && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
   gsap.registerPlugin(ScrollTrigger);
-  // 黃色大色塊緩慢視差
+
+  // 魔法星空：hero 與 shows 區隨機灑星
+  const seedStars = (sel, n) => {
+    const box = document.querySelector(sel);
+    if (!box) return;
+    for (let i = 0; i < n; i++) {
+      const st = document.createElement('span');
+      st.className = 'star';
+      st.textContent = i % 3 ? '✦' : '✧';
+      st.style.left = (4 + (i * 89) % 92) + '%';
+      st.style.top = (6 + (i * 53) % 84) + '%';
+      st.style.fontSize = (10 + (i * 7) % 16) + 'px';
+      box.appendChild(st);
+      gsap.to(st, {opacity: .15 + ((i * 13) % 60) / 100, scale: .6 + ((i * 17) % 50) / 100,
+        duration: 1.2 + (i % 5) * .5, yoyo: true, repeat: -1, ease: 'sine.inOut', delay: (i % 7) * .3});
+      gsap.to(st, {y: -10 - (i % 4) * 6, duration: 3 + (i % 5), yoyo: true, repeat: -1, ease: 'sine.inOut'});
+    }
+  };
+  seedStars('.hero', 18);
+  seedStars('.shows', 14);
+
+  // 滑鼠魔法塵（節流）
+  let lastDust = 0;
+  document.querySelector('.hero').addEventListener('pointermove', e => {
+    const now = performance.now();
+    if (now - lastDust < 90) return;
+    lastDust = now;
+    const d = document.createElement('span');
+    d.className = 'sparkle-dust';
+    d.textContent = '✦';
+    d.style.left = e.clientX + 'px';
+    d.style.top = e.clientY + 'px';
+    document.body.appendChild(d);
+    gsap.to(d, {y: -26 - Math.random() * 24, x: (Math.random() - .5) * 40, opacity: 0, scale: .3,
+      rotate: 120, duration: .9, ease: 'power1.out', onComplete: () => d.remove()});
+  });
+
+  // 大色塊緩慢視差
   gsap.to('.blob-bg', {yPercent: 18, ease: 'none', scrollTrigger: {trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true}});
   // 彩色紙屑飄動
   gsap.utils.toArray('.confetti i').forEach((el, i) => {
@@ -237,7 +298,11 @@ if (window.gsap && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
   });
   // 區塊進場
   gsap.utils.toArray('.dot-title, .about-grid, .show-card, .upcoming .item, .voice, .g-ph').forEach(el => {
-    gsap.from(el, {y: 44, autoAlpha: 0, duration: .85, ease: 'power2.out', scrollTrigger: {trigger: el, start: 'top 90%'}});
+    gsap.from(el, {y: 44, autoAlpha: 0, duration: .9, ease: 'back.out(1.6)', scrollTrigger: {trigger: el, start: 'top 90%'}});
+  });
+  // 劇照輕飄
+  gsap.utils.toArray('.g-ph').forEach((el, i) => {
+    gsap.to(el, {y: i % 2 ? -8 : 8, duration: 3 + (i % 3), yoyo: true, repeat: -1, ease: 'sine.inOut'});
   });
   // 節目卡片輕微交錯旋轉進場
   gsap.utils.toArray('.show-card').forEach((el, i) => {
